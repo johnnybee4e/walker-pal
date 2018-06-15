@@ -23,29 +23,42 @@ export default class Scanner extends React.Component {
   _onBarCodeRead(e) {
     let clientName = e.data;
     let time = this.timeStamp()
-    // axios.put('/api/clients', { name: clientName, time: time })
-    //   .catch(err => console.log(err));
     if (!this.state.checkedIn) {
       this.setState({ checkedIn: true });
       AlertIOS.alert(`Checking into ${e.data}'s at ${this.timeStamp()}`);
     } else {
       this.setState({ checkedIn: false });
-      AlertIOS.alert(`Checking out of ${e.data}'s at ${this.timeStamp()}`);
+      // AlertIOS.alert(`Checking out of ${e.data}'s at ${this.timeStamp()}`);
+      AlertIOS.alert(
+        `Checking out of ${e.data}'s at ${this.timeStamp()}`,
+        'Would you like the best route to your next Walk?',
+        [
+          {
+            text: 'No',
+            onPress: () => console.log('No Pressed'),
+            style: 'cancel',
+          },
+          {
+            text: 'Yes',
+            onPress: () => this.props.navigation.navigate('MapScreen')
+          },
+        ]
+      );
     }
   }
 
   timeStamp() {
     // Create a date object with the current time
-    var now = new Date();
+    let now = new Date();
 
     // Create an array with the current month, day and time
-    var date = [now.getMonth() + 1, now.getDate(), now.getFullYear()];
+    let date = [now.getMonth() + 1, now.getDate(), now.getFullYear()];
 
     // Create an array with the current hour, minute and second
-    var time = [now.getHours(), now.getMinutes(), now.getSeconds()];
+    let time = [now.getHours(), now.getMinutes(), now.getSeconds()];
 
     // Determine AM or PM suffix based on the hour
-    var suffix = time[0] < 12 ? 'AM' : 'PM';
+    let suffix = time[0] < 12 ? 'AM' : 'PM';
 
     // Convert hour from military time
     time[0] = time[0] < 12 ? time[0] : time[0] - 12;
@@ -54,14 +67,14 @@ export default class Scanner extends React.Component {
     time[0] = time[0] || 12;
 
     // If seconds and minutes are less than 10, add a zero
-    for (var i = 1; i < 3; i++) {
+    for (let i = 1; i < 3; i++) {
       if (time[i] < 10) {
         time[i] = '0' + time[i];
       }
     }
 
     // Return the formatted string
-    return date.join('/') + ' ' + time.join(':') + ' ' + suffix;
+    return `${date.join('/')} ${time.join(':')} $ {suffix}`;
   }
   render() {
     const { hasCameraPermission } = this.state;
