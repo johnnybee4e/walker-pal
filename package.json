@@ -19,8 +19,15 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "expo": "^27.0.1",
+    "expo": "^27.1.0",
     "react": "16.3.1",
-    "react-native": "~0.55.2"
+    "react-native": "~0.55.2",
+    "react-native-camera": "^1.1.4",
+    "react-native-maps": "^0.21.0",
+    "react-native-maps-directions": "^1.6.0",
+    "react-native-permissions": "^1.1.1",
+    "react-native-qrcode-scanner": "^1.0.1",
+    "react-navigation": "^2.3.1",
+    "watchman": "^1.0.0"
   }
 }
