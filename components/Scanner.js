@@ -1,50 +1,89 @@
 import React from 'react';
 import { Text, View, TouchableOpacity, AlertIOS } from 'react-native';
 import { Camera, Permissions } from 'expo';
-import axios from 'axios';
 
 export default class Scanner extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      hasLocationPermission: null,
       hasCameraPermission: null,
       type: Camera.Constants.Type.back,
       checkedIn: false,
+      currentCoords: {},
     };
     this._onBarCodeRead = this._onBarCodeRead.bind(this);
     this.timeStamp = this.timeStamp.bind(this);
+    this.cameraPermissions = this.cameraPermissions.bind(this);
+    this.locationPermissions = this.locationPermissions.bind(this);
+    this.checkIn = this.checkIn.bind(this);
   }
 
   async componentWillMount() {
+    await this.cameraPermissions();
+    await this.locationPermissions();
+  }
+
+  async cameraPermissions() {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
     this.setState({ hasCameraPermission: status === 'granted' });
   }
 
-  _onBarCodeRead(e) {
-    let clientName = e.data;
-    let time = this.timeStamp()
-    if (!this.state.checkedIn) {
-      this.setState({ checkedIn: true });
-      AlertIOS.alert(`Checking into ${e.data}'s at ${this.timeStamp()}`);
-    } else {
-      this.setState({ checkedIn: false });
-      // AlertIOS.alert(`Checking out of ${e.data}'s at ${this.timeStamp()}`);
-      AlertIOS.alert(
-        `Checking out of ${e.data}'s at ${this.timeStamp()}`,
-        'Would you like the best route to your next Walk?',
-        [
-          {
-            text: 'No',
-            onPress: () => console.log('No Pressed'),
-            style: 'cancel',
+  async locationPermissions() {
+    const { status } = await Permissions.askAsync(Permissions.LOCATION);
+    status === 'granted'
+      ? this.setState({ hasLocationPermission: status === 'granted' })
+      : AlertIOS.alert(
+          'You Must Enable Location Permissions',
+          'Go to settings and allow Permissions for this app.'
+        );
+  }
+
+  _onBarCodeRead(evt) {
+    const validator = 'walkerpal: ';
+    let clientName = evt.data.slice(11);
+    if (evt.data.slice(0, 11) !== validator) AlertIOS.alert(`Invalid Barcode`);
+    this.getLocation();
+    this.state.checkedIn ? this.checkOut(clientName) : this.checkIn(clientName);
+  }
+
+  checkIn(client) {
+    this.setState({ checkedIn: true });
+    AlertIOS.alert(`Checking into ${client}'s at ${this.timeStamp()}`);
+  }
+
+  checkOut(client) {
+    this.setState({ checkedIn: false });
+    AlertIOS.alert(
+      `Checking out of ${client}'s at ${this.timeStamp()}`,
+      'Would you like the best route to your next Walk?',
+      [
+        {
+          text: 'No',
+          onPress: () => console.log('No Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Yes',
+          onPress: () => this.props.navigation.navigate('MapScreen', {currentCoords: this.state.currentCoords}),
+        },
+      ]
+    );
+  }
+
+  getLocation() {
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        this.setState({
+          currentCoords: {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
           },
-          {
-            text: 'Yes',
-            onPress: () => this.props.navigation.navigate('MapScreen')
-          },
-        ]
-      );
-    }
+        });
+      },
+      error => `There was an error: ${error}`,
+      { enableHighAccuracy: false, timeout: 200000, maximumAge: 1000 }
+    );
   }
 
   timeStamp() {
@@ -74,7 +113,7 @@ export default class Scanner extends React.Component {
     }
 
     // Return the formatted string
-    return `${date.join('/')} ${time.join(':')} $ {suffix}`;
+    return `${date.join('/')} ${time.join(':')} ${suffix}`;
   }
   render() {
     const { hasCameraPermission } = this.state;
