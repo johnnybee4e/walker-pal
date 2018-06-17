@@ -1,0 +1,18 @@
+{
+  "mock schedule" : {
+    "walk 1" : {
+      "client" : "Jane Doe",
+      "dog" : "Buddy",
+      "start-time": "1:00pm",
+      "duration": 30,
+      "location" : {"latitude": "", "longitude": ""}
+    },
+    "walk 2" : {
+      "client" : "John Smith",
+      "dog" : "Bear",
+      "start-time": "2:15pm",
+      "duration": 45,
+      "location" : {"latitude": "40.7806729", "longitude": ""}
+    }
+  }
+}

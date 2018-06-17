@@ -43,10 +43,13 @@ export default class Scanner extends React.Component {
     const validator = 'walkerpal: ';
     let clientName = evt.data.slice(11);
     if (evt.data.slice(0, 11) !== validator) AlertIOS.alert(`Invalid Barcode`);
-    this.getLocation();
-    this.state.checkedIn ? this.checkOut(clientName) : this.checkIn(clientName);
+    else {
+      this.getLocation();
+      this.state.checkedIn
+        ? this.checkOut(clientName)
+        : this.checkIn(clientName);
+    }
   }
-
   checkIn(client) {
     this.setState({ checkedIn: true });
     AlertIOS.alert(`Checking into ${client}'s at ${this.timeStamp()}`);
@@ -65,7 +68,10 @@ export default class Scanner extends React.Component {
         },
         {
           text: 'Yes',
-          onPress: () => this.props.navigation.navigate('MapScreen', {currentCoords: this.state.currentCoords}),
+          onPress: () =>
+            this.props.navigation.navigate('MapScreen', {
+              currentCoords: this.state.currentCoords,
+            }),
         },
       ]
     );

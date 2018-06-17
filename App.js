@@ -5,6 +5,7 @@ import Home from './components/Home';
 import Scanner from './components/Scanner';
 import Test from './components/Test';
 import MapScreen from './components/Directions';
+import DatabaseComponent from './components/Database';
 
 const RootNavigator = createStackNavigator({
   Main: {
@@ -13,10 +14,10 @@ const RootNavigator = createStackNavigator({
       headerTitle: 'Home',
     },
   },
-  Test: {
-    screen: Test,
+  DatabaseComponent: {
+    screen: DatabaseComponent,
     navigationOptions: {
-      headerTitle: 'Test Page',
+      headerTitle: 'Schedule',
     },
   },
   Scanner: {

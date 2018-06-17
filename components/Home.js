@@ -17,12 +17,12 @@ const Home = ({ navigation }) => (
       onPress={() => navigation.navigate('Scanner')}
       title="Push To Scan"
     />
+    <Button
+          onPress={() => navigation.navigate('DatabaseComponent')}
+          title="Schedule"
+        />
   </View>
 );
 
 export default Home;
 
-// <Button
-//       onPress={() => navigation.navigate('MapScreen')}
-//       title="Push To Get Directions"
-//     />
