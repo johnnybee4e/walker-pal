@@ -74,7 +74,7 @@ const Home = ({ navigation }) => (
     <View style={styles.buttonContainer}>
       <Button
         style={styles.button}
-        onPress={() => console.log('Schedule Selected')}
+        onPress={() => navigation.navigate('Schedule')}
         title="Schedule"
       />
     </View>

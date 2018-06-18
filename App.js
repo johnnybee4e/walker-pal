@@ -1,9 +1,7 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
 import Home from './components/Home';
 import Scanner from './components/Scanner';
-import Test from './components/Test';
+import Schedule from './components/Schedule';
 import MapScreen from './components/Directions';
 
 const RootNavigator = createStackNavigator({
@@ -13,10 +11,10 @@ const RootNavigator = createStackNavigator({
       headerTitle: 'Home',
     },
   },
-  Test: {
-    screen: Test,
+  Schedule: {
+    screen: Schedule,
     navigationOptions: {
-      headerTitle: 'Test Page',
+      headerTitle: 'Schedule',
     },
   },
   Scanner: {

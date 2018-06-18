@@ -47,39 +47,58 @@ export default class Scanner extends React.Component {
   }
 
   _onBarCodeRead(evt) {
+    if (!this.state.checkedIn && !this.state.walkerSchedule.length) return;
     const validator = 'walkerpal: ';
     let clientName = evt.data.slice(11);
     if (evt.data.slice(0, 11) !== validator) AlertIOS.alert(`Invalid Barcode`);
-    this.getLocation();
-    this.state.checkedIn ? this.checkOut(clientName) : this.checkIn(clientName);
+    else {
+      this.getLocation();
+      this.state.checkedIn
+        ? this.checkOut(clientName)
+        : this.checkIn(clientName);
+    }
   }
 
   checkIn(client) {
-    this.setState({ checkedIn: true });
+    const remainingWalks = this.state.walkerSchedule.slice(1);
+    this.setState({ checkedIn: true, walkerSchedule: remainingWalks });
+    if (!this.state.walkerSchedule.length) {
+      AlertIOS.alert(
+        `Checking into ${client}'s at ${this.timeStamp()}`,
+        'This is your last walk of the day!'
+      );
+    }
     AlertIOS.alert(`Checking into ${client}'s at ${this.timeStamp()}`);
   }
 
   checkOut(client) {
     this.setState({ checkedIn: false });
-    AlertIOS.alert(
-      `Checking out of ${client}'s at ${this.timeStamp()}`,
-      'Would you like the best route to your next Walk?',
-      [
-        {
-          text: 'No',
-          onPress: () => console.log('No Pressed'),
-          style: 'cancel',
-        },
-        {
-          text: 'Yes',
-          onPress: () =>
-            this.props.navigation.navigate('MapScreen', {
-              currentCoords: this.state.currentCoords,
-              destination: this.state.walkerSchedule[1].clientCoords,
-            }),
-        },
-      ]
-    );
+    if (!this.state.walkerSchedule.length) {
+      AlertIOS.alert(
+        `Checking out of ${client}'s at ${this.timeStamp()}`,
+        'That was your last walk. Enjoy the rest of your day!'
+      );
+    } else {
+      AlertIOS.alert(
+        `Checking out of ${client}'s at ${this.timeStamp()}`,
+        'Would you like the best route to your next Walk?',
+        [
+          {
+            text: 'No',
+            onPress: () => console.log('No Pressed'),
+            style: 'cancel',
+          },
+          {
+            text: 'Yes',
+            onPress: () =>
+              this.props.navigation.navigate('MapScreen', {
+                currentCoords: this.state.currentCoords,
+                destination: this.state.walkerSchedule[0].clientCoords,
+              }),
+          },
+        ]
+      );
+    }
   }
 
   getLocation() {

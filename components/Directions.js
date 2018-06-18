@@ -20,8 +20,7 @@ export default class MapScreen extends Component {
       `https://maps.googleapis.com/maps/api/directions/json?origin=40.7050758,-74.0091604&destination=40.6577384,-73.9601139&mode=transit&key=AIzaSyDjyBsYML1ndeGbgZ_gKnKQ-YHPkz3m9C0`
     )
       .then(res => {
-        console.log(this.props.navigation.state.params.currentCoords);
-        console.log(this.props.navigation.state.params.destination);
+        console.log("made it!")
       })
       // .then(responseText => {
       //   console.log(responseText)
@@ -32,13 +31,11 @@ export default class MapScreen extends Component {
 
   render() {
     const { currentCoords, destination } = this.props.navigation.state.params;
-    console.log(currentCoords, '<><><><<><><><>')
-    console.log(destination, '+*+*+*+*+*+*+*+*+*')
     return (
       <View style={{ flex: 1 }}>
         <MapView
           provider={PROVIDER_GOOGLE}
-          style={{ flex: 2 }}
+          style={{ flex: 3 }}
           initialRegion={{
             latitude: 40.7050758,
             longitude: -74.0091604,
@@ -57,7 +54,7 @@ export default class MapScreen extends Component {
             mode="transit"
           />
         </MapView>
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: .5 }}>
           <Text>holla</Text>
         </View>
       </View>
