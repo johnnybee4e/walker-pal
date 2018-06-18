@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, View, TouchableOpacity, AlertIOS } from 'react-native';
 import { Camera, Permissions } from 'expo';
+import { mockSchedule } from '../mockScedule';
 
 export default class Scanner extends React.Component {
   constructor(props) {
@@ -11,17 +12,20 @@ export default class Scanner extends React.Component {
       type: Camera.Constants.Type.back,
       checkedIn: false,
       currentCoords: {},
+      walkerSchedule: [],
     };
     this._onBarCodeRead = this._onBarCodeRead.bind(this);
     this.timeStamp = this.timeStamp.bind(this);
     this.cameraPermissions = this.cameraPermissions.bind(this);
     this.locationPermissions = this.locationPermissions.bind(this);
     this.checkIn = this.checkIn.bind(this);
+    this.setSchedule = this.setSchedule.bind(this);
   }
 
   async componentWillMount() {
     await this.cameraPermissions();
     await this.locationPermissions();
+    await this.setSchedule(mockSchedule);
   }
 
   async cameraPermissions() {
@@ -38,37 +42,63 @@ export default class Scanner extends React.Component {
           'Go to settings and allow Permissions for this app.'
         );
   }
+  setSchedule(schedule) {
+    this.setState({ walkerSchedule: schedule });
+  }
 
   _onBarCodeRead(evt) {
+    if (!this.state.checkedIn && !this.state.walkerSchedule.length) return;
     const validator = 'walkerpal: ';
     let clientName = evt.data.slice(11);
     if (evt.data.slice(0, 11) !== validator) AlertIOS.alert(`Invalid Barcode`);
-    this.getLocation();
-    this.state.checkedIn ? this.checkOut(clientName) : this.checkIn(clientName);
+    else {
+      this.getLocation();
+      this.state.checkedIn
+        ? this.checkOut(clientName)
+        : this.checkIn(clientName);
+    }
   }
 
   checkIn(client) {
-    this.setState({ checkedIn: true });
+    const remainingWalks = this.state.walkerSchedule.slice(1);
+    this.setState({ checkedIn: true, walkerSchedule: remainingWalks });
+    if (!this.state.walkerSchedule.length) {
+      AlertIOS.alert(
+        `Checking into ${client}'s at ${this.timeStamp()}`,
+        'This is your last walk of the day!'
+      );
+    }
     AlertIOS.alert(`Checking into ${client}'s at ${this.timeStamp()}`);
   }
 
   checkOut(client) {
     this.setState({ checkedIn: false });
-    AlertIOS.alert(
-      `Checking out of ${client}'s at ${this.timeStamp()}`,
-      'Would you like the best route to your next Walk?',
-      [
-        {
-          text: 'No',
-          onPress: () => console.log('No Pressed'),
-          style: 'cancel',
-        },
-        {
-          text: 'Yes',
-          onPress: () => this.props.navigation.navigate('MapScreen', {currentCoords: this.state.currentCoords}),
-        },
-      ]
-    );
+    if (!this.state.walkerSchedule.length) {
+      AlertIOS.alert(
+        `Checking out of ${client}'s at ${this.timeStamp()}`,
+        'That was your last walk. Enjoy the rest of your day!'
+      );
+    } else {
+      AlertIOS.alert(
+        `Checking out of ${client}'s at ${this.timeStamp()}`,
+        'Would you like the best route to your next Walk?',
+        [
+          {
+            text: 'No',
+            onPress: () => console.log('No Pressed'),
+            style: 'cancel',
+          },
+          {
+            text: 'Yes',
+            onPress: () =>
+              this.props.navigation.navigate('MapScreen', {
+                currentCoords: this.state.currentCoords,
+                destination: this.state.walkerSchedule[0].clientCoords,
+              }),
+          },
+        ]
+      );
+    }
   }
 
   getLocation() {
