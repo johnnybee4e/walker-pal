@@ -7,30 +7,39 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   header: {
-    flex: 0.25,
+    flex: 0.5,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#1F7E0C',
   },
   headerText: {
     fontSize: 30,
-    color: 'black',
-    fontFamily: 'Noteworthy-Bold' // Futura, Gurmukhi MN, Heiti SC/TC, Helvetica, Kohinoor Bangla, MarkerFelt-Thin, Menlo, Menlo-Bold, Mishafi, NoteWortyh-Bold/Light, Savoye LET, TrebuchetMS-Bold
+    color: '#fff',
+    fontFamily: 'Noteworthy-Bold', // Futura, Gurmukhi MN, Heiti SC/TC, Helvetica, Kohinoor Bangla, MarkerFelt-Thin, Menlo, Menlo-Bold, Mishafi, NoteWortyh-Bold/Light, Savoye LET, TrebuchetMS-Bold
   },
   homeScreen: {
     flex: 3,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#dadada',
+    backgroundColor: '#fff',
+  },
+  homeText: {
+    fontFamily: 'Noteworthy-Light',
+    fontSize: 18,
+    textDecorationLine: 'underline',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   buttonContainer: {
-    flex: 0.5,
-    flexDirection: 'row',
+    flex: 0.4,
+    flexDirection: 'column',
     justifyContent: 'space-around',
-
+    margin: 4,
+    backgroundColor: '#4B250F',
   },
   button: {
     fontFamily: 'Noteworthy-Light',
-    width: "40%",
+    width: '40%',
     height: 40,
     alignItems: 'center',
     // justifyContent: 'space-around'
@@ -50,25 +59,26 @@ const Home = ({ navigation }) => (
         source={require('../images/dog-silhouette.jpg')}
       />
     </View>
+    <View style={{ flex: 1, alignItems: 'center' }}>
+      <Text style={styles.homeText}>The Walker's (Other) Best Friend</Text>
+    </View>
     <View style={styles.buttonContainer}>
       <Button
         style={styles.button}
         onPress={() => navigation.navigate('Scanner')}
-        title="Check-In/Out"
-      />
+        title="Check-in/Out"
+      >
+        <Text style={{ color: '#fff' }}>Check-In/Out</Text>
+      </Button>
+    </View>
+    <View style={styles.buttonContainer}>
       <Button
-      style={styles.button}
+        style={styles.button}
         onPress={() => console.log('Schedule Selected')}
         title="Schedule"
-        />
-
+      />
     </View>
   </View>
 );
 
 export default Home;
-
-// <Button
-//       onPress={() => navigation.navigate('MapScreen')}
-//       title="Push To Get Directions"
-//     />

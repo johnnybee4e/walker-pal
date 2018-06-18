@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, View, TouchableOpacity, AlertIOS } from 'react-native';
 import { Camera, Permissions } from 'expo';
+import { mockSchedule } from '../mockScedule';
 
 export default class Scanner extends React.Component {
   constructor(props) {
@@ -11,17 +12,20 @@ export default class Scanner extends React.Component {
       type: Camera.Constants.Type.back,
       checkedIn: false,
       currentCoords: {},
+      walkerSchedule: [],
     };
     this._onBarCodeRead = this._onBarCodeRead.bind(this);
     this.timeStamp = this.timeStamp.bind(this);
     this.cameraPermissions = this.cameraPermissions.bind(this);
     this.locationPermissions = this.locationPermissions.bind(this);
     this.checkIn = this.checkIn.bind(this);
+    this.setSchedule = this.setSchedule.bind(this);
   }
 
   async componentWillMount() {
     await this.cameraPermissions();
     await this.locationPermissions();
+    await this.setSchedule(mockSchedule);
   }
 
   async cameraPermissions() {
@@ -37,6 +41,9 @@ export default class Scanner extends React.Component {
           'You Must Enable Location Permissions',
           'Go to settings and allow Permissions for this app.'
         );
+  }
+  setSchedule(schedule) {
+    this.setState({ walkerSchedule: schedule });
   }
 
   _onBarCodeRead(evt) {
@@ -65,7 +72,11 @@ export default class Scanner extends React.Component {
         },
         {
           text: 'Yes',
-          onPress: () => this.props.navigation.navigate('MapScreen', {currentCoords: this.state.currentCoords}),
+          onPress: () =>
+            this.props.navigation.navigate('MapScreen', {
+              currentCoords: this.state.currentCoords,
+              destination: this.state.walkerSchedule[1].clientCoords,
+            }),
         },
       ]
     );

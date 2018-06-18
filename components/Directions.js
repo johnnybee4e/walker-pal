@@ -4,8 +4,7 @@ import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import axios from 'axios';
 
-const origin = { latitude: 40.5810297, longitude: -73.828232 };
-const destination = { latitude: 40.6577384, longitude: -73.9601139 };
+
 const GOOGLE_MAPS_APIKEY = 'AIzaSyDjyBsYML1ndeGbgZ_gKnKQ-YHPkz3m9C0';
 
 export default class MapScreen extends Component {
@@ -21,7 +20,8 @@ export default class MapScreen extends Component {
       `https://maps.googleapis.com/maps/api/directions/json?origin=40.7050758,-74.0091604&destination=40.6577384,-73.9601139&mode=transit&key=AIzaSyDjyBsYML1ndeGbgZ_gKnKQ-YHPkz3m9C0`
     )
       .then(res => {
-        console.log('We made it!')
+        console.log(this.props.navigation.state.params.currentCoords);
+        console.log(this.props.navigation.state.params.destination);
       })
       // .then(responseText => {
       //   console.log(responseText)
@@ -31,6 +31,9 @@ export default class MapScreen extends Component {
   }
 
   render() {
+    const { currentCoords, destination } = this.props.navigation.state.params;
+    console.log(currentCoords, '<><><><<><><><>')
+    console.log(destination, '+*+*+*+*+*+*+*+*+*')
     return (
       <View style={{ flex: 1 }}>
         <MapView
@@ -43,19 +46,19 @@ export default class MapScreen extends Component {
             longitudeDelta: 0.0421,
           }}
         >
-          <MapView.Marker coordinate={origin} />
+          <MapView.Marker coordinate={currentCoords} />
           <MapView.Marker
-            coordinate={this.props.navigation.state.params.currentCoords}
+            coordinate={destination}
           />
           <MapViewDirections
-            origin={origin}
-            destination={this.props.navigation.state.params.currentCoords}
+            origin={currentCoords}
+            destination={destination}
             apikey={GOOGLE_MAPS_APIKEY}
             mode="transit"
           />
         </MapView>
         <View style={{ flex: 1 }}>
-          <Text>This is a test</Text>
+          <Text>holla</Text>
         </View>
       </View>
     );
