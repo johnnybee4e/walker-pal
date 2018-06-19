@@ -52,10 +52,18 @@ export default class MapScreen extends Component {
             destination={destination}
             apikey={GOOGLE_MAPS_APIKEY}
             mode="transit"
+            strokeWidth={3}
+            strokeColor='red'
           />
         </MapView>
-        <View style={{ flex: .5 }}>
-          <Text>holla</Text>
+        <View style={{ flex: .5, backgroundColor: '#4B250F' }}>
+          <Text style={{
+            textAlign: 'center',
+            fontSize: 18,
+            fontFamily: "Noteworthy-Light",
+            paddingTop: 10,
+            color: '#fff',
+          }}>This is where Step-by-step directions will go.</Text>
         </View>
       </View>
     );

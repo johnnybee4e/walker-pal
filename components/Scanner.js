@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, AlertIOS } from 'react-native';
+import { Text, View, TouchableOpacity, AlertIOS, AsyncStorage } from 'react-native';
 import { Camera, Permissions } from 'expo';
 import { mockSchedule } from '../mockScedule';
 
